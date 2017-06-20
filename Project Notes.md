@@ -1,6 +1,6 @@
 # Overview
 ____
-This project is an experiment with Generative Adversarial Neural Networks to try and catch card counters in casinos. In this project, however, there will be many generator networks, and one discriminator network. The many generator networks will each be card counting using a [different style](#Counting-Styles-Used). The discriminator network will learn from each of these networks how to catch card counters. The generator networks will be trained to both profit, and avoid being caught card counting, so that they don't just always lose money to avoid being caught.
+This project is an experiment with Generative Adversarial Neural Networks to try and catch card counters in casinos. In this project, however, there will be many generator networks, and one discriminator network. The many generator networks will each be card counting using a [different style](#counting-styles-used). The discriminator network will learn from each of these networks how to catch card counters. The generator networks will be trained to both profit, and avoid being caught card counting, so that they don't just always lose money to avoid being caught.
 
 ## Generator Networks
 ____
