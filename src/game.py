@@ -4,6 +4,8 @@ from deck import deck
 from player import player
 from dealer import dealer
 
+#TODO: make loss/win histogram for players
+
 class game(object):
     def __init__(self):
         self.players = []
@@ -27,8 +29,6 @@ class game(object):
         self.catcher = None
 
         self.minDeckCount = 20
-        self.win = 0
-        self.loss = 0
 
     def playHand(self, table):
         #play all players
@@ -101,35 +101,25 @@ class game(object):
         for i in range(0, numDecks):
             print 'playing deck ', i
             self.playGame('first')
+            self.playGame('second')
+            self.playGame('third')
             self.reseed()
             print ''
-
-        print 'won: ', self.win
-        print 'lost: ', self.loss
-            #self.playGame('first')
-            #self.playGame('second')
-            #self.playGame('third')
-
 
     def assessGame(self, table):
         if self.dealers[table].didBust():
             for p in self.tables[table]:
                 if not p.didBust():
                     print p, ' beat dealer'
-                    self.win = self.win + 1
                 else:
                     print p, ' did not beat dealer'
-                    self.loss = self.loss + 1
         else:
             for p in self.tables[table]:
                 if not p.didBust():
                     if p.getCount() > self.dealers[table].getCount():
                         print p, ' beat dealer'
-                        self.win = self.win + 1
                     else:
                         print p, ' did not beat dealer'
-                        self.loss = self.loss + 1
                 else:
                     print p, ' did not beat dealer'
-                    self.loss = self.loss + 1
 

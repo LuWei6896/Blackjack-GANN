@@ -1,9 +1,9 @@
 import random
 
 class deck(object):
-    def __init__(self):
+    def __init__(self, numberOfDecks = 4):
         self.cards = None
-        self.numDecks = 3
+        self.numDecks = numberOfDecks
         self.__populateDeck()
         self.shuffle()
 

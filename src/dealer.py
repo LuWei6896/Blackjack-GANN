@@ -5,7 +5,7 @@ class dealer(player):
     def __init__(self):
         player.__init__(self)
         self.holeCard = None
-        self.name = "dealer"
+        self.name = 'Dealer'
 
     def reset(self):
         player.reset(self)
@@ -22,7 +22,7 @@ class dealer(player):
             self.upCards.append(card)
 
     def play(self, deck):
-        while not self.staying:
+        while not self.isStaying():
             if self.getCount() < 17:
                 self.hit(deck)
             else:

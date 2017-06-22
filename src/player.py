@@ -1,12 +1,22 @@
 
 
+basicBet = 1
+
 class player(object):
     def __init__(self):
+        #hand
         self.upCards = []
+
+        #info to determine what player is going to do
         self.staying = False
-        self.isCounting = False
         self.bust = False
+
+        #for training networks
+        self.isCounting = False
         self.name = "basic player"
+
+        #money
+        self.bet = basicBet
 
     def __str__(self):
         return self.name
@@ -15,6 +25,7 @@ class player(object):
         self.upCards = []
         self.staying = False
         self.bust = False
+        self.bet = basicBet
     
     def getCount(self):
         return sum( self.upCards )
@@ -30,6 +41,14 @@ class player(object):
     
     def stay(self):
         self.staying = True
+    
+    def doubleBet(self):
+        self.bet = self.bet * 2
+
+    def doubleDown(self, deck):
+        self.doubleBet() 
+        self.hit(deck)
+        self.stay()
 
     def isCounting(self):
         return self.isCounting
@@ -48,3 +67,5 @@ class player(object):
         else:
             self.bust = False
             return False
+    def isStaying(self):
+        return self.staying
