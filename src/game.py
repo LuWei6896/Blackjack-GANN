@@ -27,15 +27,17 @@ class game(object):
         self.catcher = None
 
         self.minDeckCount = 20
-
+        self.win = 0
+        self.loss = 0
 
     def playHand(self, table):
         #play all players
         for player in self.tables[table]:
-            player.play(self.decks[table])
+            player.play(self.decks[table], self.dealers[table])
         
         #play dealer last
         self.dealers[table].play(self.decks[table])
+        self.assessGame(table)
 
     def playGame(self, table):
 
@@ -101,11 +103,33 @@ class game(object):
             self.playGame('first')
             self.reseed()
             print ''
-            print ''
 
-
+        print 'won: ', self.win
+        print 'lost: ', self.loss
             #self.playGame('first')
             #self.playGame('second')
             #self.playGame('third')
 
+
+    def assessGame(self, table):
+        if self.dealers[table].didBust():
+            for p in self.tables[table]:
+                if not p.didBust():
+                    print p, ' beat dealer'
+                    self.win = self.win + 1
+                else:
+                    print p, ' did not beat dealer'
+                    self.loss = self.loss + 1
+        else:
+            for p in self.tables[table]:
+                if not p.didBust():
+                    if p.getCount() > self.dealers[table].getCount():
+                        print p, ' beat dealer'
+                        self.win = self.win + 1
+                    else:
+                        print p, ' did not beat dealer'
+                        self.loss = self.loss + 1
+                else:
+                    print p, ' did not beat dealer'
+                    self.loss = self.loss + 1
 

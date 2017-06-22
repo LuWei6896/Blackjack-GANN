@@ -25,6 +25,7 @@ class deck(object):
 
     def resetDeck(self):
         self.__populateDeck()
+        self.shuffle()
 
     def numCards(self):
         return len( self.cards )

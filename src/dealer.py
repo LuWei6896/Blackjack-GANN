@@ -5,6 +5,7 @@ class dealer(player):
     def __init__(self):
         player.__init__(self)
         self.holeCard = None
+        self.name = "dealer"
 
     def reset(self):
         player.reset(self)
@@ -22,16 +23,12 @@ class dealer(player):
 
     def play(self, deck):
         while not self.staying:
-            print 'count is ', self.getCount()
             if self.getCount() < 17:
-                print 'hitting'
                 self.hit(deck)
             else:
-                print 'staying'
                 self.stay() 
         self.checkBust() 
-        if self.bust:
-            print 'busted'
-        else:
-            print 'did not bust'
         return self.getCount()
+    
+    def getUpCard(self):
+        return sum( self.upCards )
