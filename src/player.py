@@ -1,4 +1,4 @@
-
+import uuid 
 
 basicBet = 1
 
@@ -14,12 +14,16 @@ class player(object):
         #for training networks
         self.isCounting = False
         self.name = "basic player"
+        self.id = str(uuid.uuid4())
 
         #money
         self.bet = basicBet
 
     def __str__(self):
-        return self.name
+        return self.name + ' [' + self.id + ']'
+
+    def getID(self):
+        return self.id
 
     def reset(self, mode = 'round'):
         self.upCards = []

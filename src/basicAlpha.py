@@ -32,7 +32,7 @@ class basicAlpha(player):
                 ['n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n']#21
             ]
 
-    def play(self,  deck,  dealer):
+    def play(self, deck, dealer):
         while not self.isStaying():
             dAdd = dealer.getUpCard()
             pAdd = self.getCount()

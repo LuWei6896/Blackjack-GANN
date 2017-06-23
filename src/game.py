@@ -3,6 +3,7 @@ from util import util
 from deck import deck
 from player import player
 from dealer import dealer
+from histogram import histogram
 
 #TODO: make loss/win histogram for players
 
@@ -30,10 +31,12 @@ class game(object):
 
         self.minDeckCount = 20
 
+        self.hst = histogram()
+
     def playHand(self, table):
         #play all players
-        for player in self.tables[table]:
-            player.play(self.decks[table], self.dealers[table])
+        for p in self.tables[table]:
+            p.play(self.decks[table], self.dealers[table])
         
         #play dealer last
         self.dealers[table].play(self.decks[table])
@@ -98,28 +101,37 @@ class game(object):
     
     #once every table has gone through 100 complete decks, the game finishes
     def gameLoop(self, numDecks = 10):
+        self.hst.addPlayers(self.players)
+
         for i in range(0, numDecks):
             print 'playing deck ', i
             self.playGame('first')
             self.playGame('second')
             self.playGame('third')
             self.reseed()
-            print ''
+
+        self.finalAssessment()
 
     def assessGame(self, table):
         if self.dealers[table].didBust():
             for p in self.tables[table]:
-                if not p.didBust():
-                    print p, ' beat dealer'
-                else:
-                    print p, ' did not beat dealer'
+                if not p.didBust(): # beat dealer
+                    self.hst.updateWins(p)
+                else: # did not beat dealer
+                    self.hst.updateLosses(p)
         else:
             for p in self.tables[table]:
                 if not p.didBust():
-                    if p.getCount() > self.dealers[table].getCount():
-                        print p, ' beat dealer'
-                    else:
-                        print p, ' did not beat dealer'
-                else:
-                    print p, ' did not beat dealer'
+                    if p.getCount() > self.dealers[table].getCount(): # beat dealer
+                        self.hst.updateWins(p)
+                    else: # did not beat dealer
+                        self.hst.updateLosses(p)
+                else: # did not beat dealer
+                    self.hst.updateLosses(p)
 
+    def finalAssessment(self):
+        for p in self.players:
+            h = self.hst.getInfo(p)
+            win, loss = h['wins'], h['losses']
+            winRatio = float( win ) /float( (win + loss) )
+            print p.getID(), '(', p, ')', 'won:', win, 'games, lost:', loss, 'games with a win ratio of', winRatio
