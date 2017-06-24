@@ -21,7 +21,7 @@ class dealer(player):
         else:
             self.upCards.append(card)
 
-    def play(self, deck, dealer = None):
+    def play(self, deck, dealer = None, table = None):
         while not self.isStaying():
             if self.getCount() < 17:
                 self.hit(deck)

@@ -12,10 +12,6 @@ class counter(player):
 
     def setCountMap(self, cm):
         self.countMap = cm
-        
-    def updateCount(self, roundDealt):
-        for card in roundDealt:
-            self.count += float( self.countMap[ str(card) ] )
 
     def getNetwork(self):
         return self.network
@@ -23,11 +19,22 @@ class counter(player):
     def setNetwork(self, network):
         self.network = network
 
-    def predict():
+    def predict(self):
         return
 
-    def play(deck):
-        while not self.staying:
+    def play(self, deck, dealer, table):
+        while not self.isStaying():
+            c = self.getCount(dealer, table)
+            self.stay()
+
             
-
-
+    def getCount(self, dealer, table):
+        count = 0.0
+        arr = [x for x in table]
+        arr.append(dealer)
+        for p in arr:
+            cards = p.getUpCards()
+            for n in cards:
+                count += self.countMap[ str(n) ]
+        self.count = count
+        return count

@@ -33,7 +33,7 @@ class basicBeta(player):
             ]
 
 
-        def play(self,  deck,  dealer):
+        def play(self,  deck,  dealer, table = None):
             while not self.isStaying():
                 dAdd = dealer.getUpCard()
                 pAdd = self.getCount()

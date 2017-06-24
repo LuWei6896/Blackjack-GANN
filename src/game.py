@@ -36,7 +36,7 @@ class game(object):
     def playHand(self, table):
         #play all players
         for p in self.tables[table]:
-            p.play(self.decks[table], self.dealers[table])
+            p.play(self.decks[table], self.dealers[table], self.tables[table])
         
         #play dealer last
         self.dealers[table].play(self.decks[table])

@@ -8,7 +8,7 @@ class basicDelta(basicAlpha):
         self.riskFactor = riskFactor
         self.name = 'Basic Delta (Risky Basic Alpha)'
 
-    def play(self, deck, dealer):
+    def play(self, deck, dealer, table = None):
         while not self.isStaying():
             dAdd = dealer.getUpCard()
             pAdd = self.getCount()

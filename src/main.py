@@ -30,5 +30,5 @@ g.addPlayer(bd)
 g.addPlayer(bd1)
 g.addPlayer(be)
 g.addPlayer(be1)
-g.gameLoop()
+g.gameLoop(numDecks = 50)
 

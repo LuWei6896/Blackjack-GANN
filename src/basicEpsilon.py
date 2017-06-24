@@ -6,7 +6,7 @@ class basicEpsilon(player):
         player.__init__(self)
         self.name = 'Basic Epsilon (Hit Until 19)'
 
-    def play(self, deck, dealer):
+    def play(self, deck, dealer, table = None):
         while not self.isStaying():
             if self.getCount() <= 18:
                 self.hit(deck)
