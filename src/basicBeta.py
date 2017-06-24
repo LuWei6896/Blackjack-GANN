@@ -42,7 +42,10 @@ class basicBeta(player):
                 elif self.strategyTable[pAdd][dAdd] is 'h':
                     self.hit(deck)
                 elif self.strategyTable[pAdd][dAdd] is 'd':
-                    self.doubleDown(deck)
+                    if len(self.upCards) is 2:
+                        self.doubleDown(deck)
+                    else:
+                        self.hit(deck)
                 else:
                     pass
 

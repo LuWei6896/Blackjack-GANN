@@ -104,7 +104,6 @@ class game(object):
         self.hst.addPlayers(self.players)
 
         for i in range(0, numDecks):
-            print 'playing deck ', i
             self.playGame('first')
             self.playGame('second')
             self.playGame('third')
@@ -124,6 +123,8 @@ class game(object):
                 if not p.didBust():
                     if p.getCount() > self.dealers[table].getCount(): # beat dealer
                         self.hst.updateWins(p)
+                    elif p.getCount() == self.dealers[table].getCount(): #tie, even money
+                        self.hst.updateTies(p)
                     else: # did not beat dealer
                         self.hst.updateLosses(p)
                 else: # did not beat dealer
@@ -132,6 +133,7 @@ class game(object):
     def finalAssessment(self):
         for p in self.players:
             h = self.hst.getInfo(p)
-            win, loss = h['wins'], h['losses']
-            winRatio = float( win ) /float( (win + loss) )
-            print p.getID(), '(', p, ')', 'won:', win, 'games, lost:', loss, 'games with a win ratio of', winRatio
+            win, loss, tie = h['wins'], h['losses'], h['ties']
+            winRatio =  100.0 * ( float( win ) /float( win + loss + tie ) )
+            winRatio = round(winRatio, 1)
+            print p.getID(), '(', p, ')', 'won:', win, 'games, lost:', loss, 'games, tied', tie, 'games with a win ratio of', ( str(winRatio) + '%')

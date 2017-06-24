@@ -9,6 +9,7 @@ class histogram(object):
             self.dct[p.getID()] = { 
                     'wins': 0,
                     'losses': 0, 
+                    'ties': 0,
                     'histogram': []
                     }
 
@@ -26,6 +27,7 @@ class histogram(object):
             self.dct[p.getID()] = {
                     'wins': 0,
                     'losses': lossCount, 
+                    'ties': 0,
                     'histogram': ['L'] * lossCount
                     }
 
@@ -39,9 +41,22 @@ class histogram(object):
             self.dct[p.getID()] = {
                     'wins': winCount,
                     'losses': 0,
+                    'ties': 0,
                     'histogram': ['W'] * winCount
                     }
 
+    def updateTies(self, p, tieCount = 1):
+        if p.getID() in self.dct:
+            self.dct[p.getID()]['ties'] =  self.dct[p.getID()]['ties'] + tieCount
+            hist = ['T'] * tieCount
+            [self.dct[p.getID()]['histogram'].append(x) for x in hist]
+        else:
+            self.dct[p.getID()] = {
+                    'wins': 0,
+                    'losses': 0,
+                    'ties': tieCount,
+                    'histogram': ['T'] * tieCount
+                    }
 
     def getHistogram(self, p):
         if p.getID() in self.dct:

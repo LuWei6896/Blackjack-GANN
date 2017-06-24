@@ -13,7 +13,7 @@ class player(object):
 
         #for training networks
         self.isCounting = False
-        self.name = "basic player"
+        self.name = 'basic player'
         self.id = str(uuid.uuid4())
 
         #money
