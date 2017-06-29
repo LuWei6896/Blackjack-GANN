@@ -46,4 +46,9 @@ ____
 [Reference](https://www.blackjackapprenticeship.com/resources/card-counting-systems/)
 ____
 
-
+## Possible Training Methods
+---------------------------
+- Alternate Training
+  - Getting 21, and avoiding being caught aren't entirely different problems, so what we can do is train the network to get 21 for, say 100 games, and then train it to avoid being caught for 100 games. We should train the getting 21 at a higher learning rate than avoiding being getting caught  so that at least it plays properly. 
+- Consecutive Networks (more like adversarial)
+  - This works by treating the player network as though it feeds directly into the counter network. So, our error function can be divided into trying to get the network to get to 21, as well as trying to avoid being caught card counting. Applying the chain rule, we get two different factors that effect each weight in the network, which we can then add together to update to a new weight. (The first factor only goes through the player network, the second goes through the entire catcher network too, but doesn't update any of those weights and biases, it just takes them into account for updating the player) 
