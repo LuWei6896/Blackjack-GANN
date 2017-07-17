@@ -6,31 +6,35 @@ from dealer import dealer
 from histogram import histogram
 
 #TODO: make loss/win histogram for players
-
+#runs games of blackjack
+#blackjack has like 6 players per table so run many tables to train the catcher against many strategies
 class game(object):
     def __init__(self):
         self.players = []
+        #represents the tables of blackjack
         self.tables = {
             'first': [],
             'second': [],
             'third': []
         }
-
+        #the dealers you have to beat at every table
         self.dealers = {
             'first': dealer(),
             'second': dealer(),
             'third': dealer()
         }
-
+        #the deck for every table
         self.decks = {
             'first': deck(),
             'second': deck(),
             'third': deck()
         }
+        #add the catcher once we create it, but for now it is nothing
         self.catcher = None
-
+        #reseed deck if there is less than this many cards in the deck
         self.minDeckCount = 20
-
+        
+        #track win/loss history for all players
         self.hst = histogram()
 
     def playHand(self, table):
@@ -54,12 +58,13 @@ class game(object):
             self.resetHand(table)
 
     def resetHand(self, table):
+        #reset all players at a table after the hand is over
         for player in self.tables[table]:
             player.reset()
 
         self.dealers[table].reset()
 
-
+    #mix up the players every once in a while
     def shufflePlayerOrder(self):
         random.shuffle(self.players)
     
@@ -99,18 +104,20 @@ class game(object):
         #TODO: uncomment above. This is just rigged for testing
         self.tables['first'].append(p)
     
-    #once every table has gone through 100 complete decks, the game finishes
+    #once every table has gone through 10 complete decks, the game finishes
     def gameLoop(self, numDecks = 10):
+        #track all players
         self.hst.addPlayers(self.players)
-
+        #run all games
         for i in range(0, numDecks):
             self.playGame('first')
             self.playGame('second')
             self.playGame('third')
             self.reseed()
-
+        #asses all games
         self.finalAssessment()
 
+    #assess if players won game or not
     def assessGame(self, table):
         if self.dealers[table].didBust():
             for p in self.tables[table]:
@@ -129,7 +136,8 @@ class game(object):
                         self.hst.updateLosses(p)
                 else: # did not beat dealer
                     self.hst.updateLosses(p)
-
+    
+    #get the histogram info and log it o console
     def finalAssessment(self):
         for p in self.players:
             h = self.hst.getInfo(p)

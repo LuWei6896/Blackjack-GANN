@@ -1,6 +1,7 @@
 from player import player
 from deck import deck
 
+#implement a basic blackjack dealer so that we can have a player that other players must beat to win
 class dealer(player):
     def __init__(self):
         player.__init__(self)

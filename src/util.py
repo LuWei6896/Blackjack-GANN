@@ -16,3 +16,18 @@ class util(object):
                 result[i].append(iterator.next())
                 remain -= 1
         return result
+
+    @staticmethod
+    def getWeightFromNeuron(nI, nO):
+        c = 0
+        for n in nI.getInputNeurons():
+            if n is nO:
+                break
+            else:
+                c = c + 1
+        return n.getWeightForPosition(c)
+
+    @staticmethod
+    def updateDerivative(n, nO):
+        n.deriv = n.deriv + (nO.deriv * util.getWeightFromNeuron(n, nO) * n.activateDerivative() )
+

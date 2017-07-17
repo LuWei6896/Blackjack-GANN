@@ -5,7 +5,9 @@ from player import player
 class basicAlpha(player):
     def __init__(self):
         player.__init__(self)
+        #name the player so that we can tell what they are, for purposes of debugging
         self.name = 'Basic Alpha (No Double)'
+        #what action to take depending on the dealer's up card, and the player's count
         self.strategyTable = [
                   #0  1   2   3   4   5   6   7   8   9   10  A
                 ['n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n'], #0
@@ -34,8 +36,10 @@ class basicAlpha(player):
 
     def play(self, deck, dealer, table = None):
         while not self.isStaying():
+            #get the table address to look at depending on player hand total, and dealer up card
             dAdd = dealer.getUpCard()
             pAdd = self.getCount()
+            #play depending on strategy table
             if self.strategyTable[pAdd][dAdd] is 's':
                 self.stay()
             else:

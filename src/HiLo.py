@@ -1,9 +1,14 @@
+'''
+this is a card counting network that uses the basic Hi-Lo counting strategy
+
+'''
 from counter import counter
 
 
 class HiLo(counter):
     def __init__(self):
         counter.__init__(self)
+        #this maps the cards to their respective count values
         self.countMap = {
                 '2': 1,
                 '3': 1,
@@ -17,7 +22,7 @@ class HiLo(counter):
                 '11': -1
                }
 
-
+    #actually play the hand of blackjack
     def play(self, deck, dealer, table): 
         while not self.isStaying():
             c = self.getCount(dealer, table)

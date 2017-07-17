@@ -5,7 +5,9 @@ from player import player
 class basicBeta(player):
     def __init__(self):
         player.__init__(self)
+        #name for debugging/logging purposes
         self.name = 'Basic Beta (Double)'
+        #strategy table. Same as basic alpha, but with doubling as well
         self.strategyTable = [
                   #0  1   2   3   4   5   6   7   8   9   10  A
                 ['n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n'], #0
@@ -35,13 +37,16 @@ class basicBeta(player):
 
         def play(self,  deck,  dealer, table = None):
             while not self.isStaying():
+                #get table addresses 
                 dAdd = dealer.getUpCard()
                 pAdd = self.getCount()
+                #take action depending on address
                 if self.strategyTable[pAdd][dAdd] is 's':
                     self.stay()
                 elif self.strategyTable[pAdd][dAdd] is 'h':
                     self.hit(deck)
                 elif self.strategyTable[pAdd][dAdd] is 'd':
+                    #you can only double down on your first hit
                     if len(self.upCards) is 2:
                         self.doubleDown(deck)
                     else:
