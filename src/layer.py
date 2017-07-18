@@ -1,4 +1,5 @@
 from neuron import neuron
+import random
 
 #layer of a neural network
 class layer(object):
@@ -12,7 +13,7 @@ class layer(object):
             for n in names:
                 self.neurons.append( neuron(n) )
         #bias for this layer
-        self.bias = 0.0
+        self.bias = random.random()
     #run the layer 
     def run(self):
         for n in self.neurons:
@@ -35,5 +36,14 @@ class layer(object):
             n.applyDeltas()
  
     def train(self, expected, lr):
+        
         for i, n in enumerate(self.neurons):
             self.neurons[i].train(expected, lr)
+        sm = 0.0
+        for n in self.neurons:
+            sm = sm + n.deriv
+        #print 'sum of all derivs', sm
+        #print 'bias', self.bias
+        
+        self.bias = self.bias - (lr * sm)
+        #print 'new bias', self.bias

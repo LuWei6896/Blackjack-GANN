@@ -52,7 +52,8 @@ class neuron(object):
         #print 'weights:', self.weights
         for i, w in zip(self.inputValues, self.weights):
             #print 'input', i, 'weight', w, 'bias', bias
-            self.intermediateValue = self.intermediateValue + ( (i * w) + bias)
+            self.intermediateValue = self.intermediateValue + (i * w)
+            self.intermediateValue = self.intermediateValue + bias
 
     #return the output 
     def getOutput(self):
@@ -116,12 +117,16 @@ class neuron(object):
     def train(self, expected, lr):
         if self.name is not None:
             self.deriv = -(expected[self.name] - self.getOutput()) * self.activateDerivative()
+            print self.name, self.deriv
+            print 'expected', expected[self.name]
+            print 'outut', self.outputValue
+            print 'activate deriv', self.activateDerivative()
         else:
             for nO in self.outputNeurons:
                 self.updateDerivative(nO)
          
         for i, w in enumerate(self.weights):
-            self.weights[i] = w + ( lr * self.inputNeurons[i].getOutput() * self.deriv)
+            self.weights[i] = w - ( lr * self.inputNeurons[i].getOutput() * self.deriv)
         
 
 

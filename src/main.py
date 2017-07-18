@@ -40,18 +40,22 @@ from network import network
 from layer import layer
 
 n = network()
-l = layer(size = 5)
-l1 = layer(size = 2)
+l = layer(size = 10)
+l1 = layer(size = 10)
+l2 = layer(size = 2)
 out = layer(names = ['out'] )
 
 n.addLayer(l)
 n.addLayer(l1)
+n.addLayer(l1)
+n.addLayer(l1)
+n.addLayer(l2)
 n.addOutputLayer(out)
 
 expected0 = {'out':0}
 expected1 = {'out':1}
 
-for i in xrange(0, 10000):
+for i in xrange(0, 5000):
     '''
     if i % 2:
         print 'training 1'
@@ -59,13 +63,13 @@ for i in xrange(0, 10000):
     else:
         print 'training 0'
         n.train( [0,0,0,0,0], expected0 )
-    '''
-    n.train( [1,1,1,1,1], expected0 )
+        '''
+    n.train( [0,0,0,0,0], expected0 )
+    n.train( [1,1,1,1,1], expected1 )
     print 'training run', i, 'complete'
+
 o = n.run( [1,1,1,1,1] )
 print o
-'''
 o = n.run( [0,0,0,0,0] )
 print o
-'''
 

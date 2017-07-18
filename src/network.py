@@ -8,7 +8,7 @@ from util import util
 class network(object):
     def __init__(self):
         self.layers = []
-        self.learningRate = 0.001
+        self.learningRate = 0.01
 
     '''
     expected is a dictionary with neuron names and expected outputs
@@ -43,7 +43,7 @@ class network(object):
                     c = c + 1
                 l.neurons[i].weightDeltas = delt
                 '''
-        print self.run(inputs)
+        self.run(inputs)
         for l in reversed(self.layers):
             l.train(expected, self.learningRate)
 
@@ -100,7 +100,6 @@ class network(object):
     
     #run the network given inputs
     def run(self, inputs):
-        #print 'STARTING RUN'
         #print 'running first layer'
         self.layers[0].inputRun(inputs) 
         c = 0
@@ -111,7 +110,6 @@ class network(object):
         out = []
         for n in self.layers[-1].getNeurons():
             out.append( (n.getName(), n.getOutput()) )
-        #print 'OUTPUT FROM RUN', out
         return out
     
     #add a layer to the network
