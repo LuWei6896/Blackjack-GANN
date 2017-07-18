@@ -2,6 +2,8 @@ from layer import layer
 from neuron import neuron
 from util import util
 
+#TODO: why isn't activateDerivative working
+#make sure that output is storing
 #basic neural network class
 class network(object):
     def __init__(self):
@@ -18,22 +20,32 @@ class network(object):
     '''
     #train the network given inputs, expected outputs, and an optional catcher netowkr for training the players
     def train(self, inputs, expected, catcher = None): 
+        '''
         #run and store intermediate values
         self.run(inputs)
         #backpropogate
         for l in reversed(self.layers):
-            for n in l.getNeurons():
+            for i, n in enumerate(l.neurons):
                 #if output layer, derivative is slightly different
                 if l is self.layers[-1]:
-                    n.deriv = -(expected[n.getName()] - n.getOutput())
-                    n.deriv = n.deriv * ( n.activateDerivative() )
+                    l.neurons[i].deriv = -(expected[n.getName()] - n.getOutput())
+                    #print 'n activate', n.activateDerivative()
+                    #print 'n output', n.getOutput()
+                    l.neurons[i].deriv = l.neurons[i].deriv * ( n.activateDerivative() )
+                    #print 'n deriv', l.neurons[i].deriv
                 else:
                     for nO in n.getOutputNeurons():
-                        util.updateDerivative(n, nO) # (dOut/dnO)*(dnO/dn)*(dn/dnIn)
+                        util.updateDerivative(l.neurons[i], nO) # (dOut/dnO)*(dnO/dn)*(dn/dnIn) TODO: double check this function
                 c = 0
-                for w, wd in n.weights, n.weightDeltas:
-                    wd = wd + ( self.learningRate * n.inputs[count].getOutput() * n.deriv ) #lr * (dOut/dnIn) * (dnIn/dW)
+                delt = []
+                for w in n.weights:
+                    delt.append( self.learningRate * n.inputNeurons[c].getOutput() * n.deriv ) #lr * (dOut/dnIn) * (dnIn/dW)
                     c = c + 1
+                l.neurons[i].weightDeltas = delt
+                '''
+        print self.run(inputs)
+        for l in reversed(self.layers):
+            l.train(expected, self.learningRate)
 
         if catcher is not None:
             retList = []
@@ -63,18 +75,43 @@ class network(object):
                     for w, wd in n.weights, n.weightDeltas:
                         wd = wd + ( self.learningRate * n.inputs[count].getOutput() * n.deriv ) #lr * (dOut/dnIn) * (dnIn/dW)
                         c = c + 1
+   
+        self.applyDeltas()
+        #print 'weights for output', self.layers[-1].getNeurons()[0].getWeights()
+        #print 'weight deltas for output', self.layers[-1].getNeurons()[0].getWeightDeltas()
+        '''
+        n = self.layers[1].getNeurons()[0]
+        print 'output', n.getOutput()
+        print 'n deriv', n.deriv
+        print 'n activate', n.activateDerivative()
+        print 'n output', n.getOutput()
+        print 'n deriv', n.deriv
+        print 'n weights', n.weights
+        '''
 
+
+
+    def applyDeltas(self):
+        for l in self.layers:
+            l.applyDeltas()
                 
 
 
     
     #run the network given inputs
     def run(self, inputs):
-        for l in self.layers:
+        #print 'STARTING RUN'
+        #print 'running first layer'
+        self.layers[0].inputRun(inputs) 
+        c = 0
+        for l in self.layers[1:]:
+            #print 'running layer', c
             l.run()
+            c = c + 1
         out = []
         for n in self.layers[-1].getNeurons():
             out.append( (n.getName(), n.getOutput()) )
+        #print 'OUTPUT FROM RUN', out
         return out
     
     #add a layer to the network

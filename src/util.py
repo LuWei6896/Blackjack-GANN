@@ -20,12 +20,12 @@ class util(object):
     @staticmethod
     def getWeightFromNeuron(nI, nO):
         c = 0
-        for n in nI.getInputNeurons():
-            if n is nO:
+        for n in nO.getInputNeurons():
+            if n is nI:
                 break
             else:
                 c = c + 1
-        return n.getWeightForPosition(c)
+        return nO.getWeightForPosition(c)
 
     @staticmethod
     def updateDerivative(n, nO):

@@ -1,4 +1,6 @@
 import numpy as np
+import random
+from util import util
 
 #basic neuron for a neural network
 class neuron(object):
@@ -28,7 +30,9 @@ class neuron(object):
     
     #sigmpoid function
     def activate(self, val):
-        return 1 / (1 + np.exp(-val) )
+        v = 1 / (1 + np.exp(-val) )
+        #print 'neuron activation:', v
+        return v
 
     #sigmoid derivative
     def activateDerivative(self):
@@ -42,9 +46,13 @@ class neuron(object):
 
     #sum up inputs * weights + bias
     def sum(self, bias):
+        self.intermediateValue = 0.0
         self.getInputs()
-        for i, w in self.inputValues, self.weights:
-            self.intermediateValue = self.intermediateValue + (i * w) + bias
+        #print 'inputValues:', self.inputValues
+        #print 'weights:', self.weights
+        for i, w in zip(self.inputValues, self.weights):
+            #print 'input', i, 'weight', w, 'bias', bias
+            self.intermediateValue = self.intermediateValue + ( (i * w) + bias)
 
     #return the output 
     def getOutput(self):
@@ -52,9 +60,12 @@ class neuron(object):
 
     #run the neuron
     def run(self, bias = None, inputValue = None):#we have inputs here for the input layer neurons
+        #print 'NEURON'
         if inputValue is None:
             self.sum(bias)
+            #print 'sum of inputs', self.intermediateValue
             self.outputValue = self.activate( self.intermediateValue )
+            #print 'output value', self.outputValue
         else:
             self.outputValue = inputValue
     
@@ -62,6 +73,8 @@ class neuron(object):
     def setInputNeurons(self, pLayer):
         for n in pLayer.getNeurons():
             self.inputNeurons.append( n )
+            self.weights.append( random.random() )
+            self.weightDeltas.append( 0.0 )
 
     #set neurons that this one outputs to 
     def setOutputNeurons(self, nLayer):
@@ -82,5 +95,35 @@ class neuron(object):
     
     def getWeightForPosition(self, pos):
         return self.weights[pos]
+    
+    def inputRun(self, value):
+        #print 'INPUT NEURON'
+        self.outputValue = value
+        #print 'output value', self.outputValue
+
+    def applyDeltas(self):
+        for i, w in enumerate(self.weights):
+            self.weights[i] = w - self.weightDeltas[i]
+        for i in range(len(self.weightDeltas)):
+            self.weightDeltas[i] = 0.0
+
+    def getWeights(self):
+        return self.weights
+
+    def getWeightDeltas(self):
+        return self.weightDeltas
+
+    def train(self, expected, lr):
+        if self.name is not None:
+            self.deriv = -(expected[self.name] - self.getOutput()) * self.activateDerivative()
+        else:
+            for nO in self.outputNeurons:
+                self.updateDerivative(nO)
+         
+        for i, w in enumerate(self.weights):
+            self.weights[i] = w + ( lr * self.inputNeurons[i].getOutput() * self.deriv)
+        
 
 
+    def updateDerivative(self, nO):
+        self.deriv = self.deriv + (nO.deriv * util.getWeightFromNeuron(self, nO) * self.activateDerivative() )

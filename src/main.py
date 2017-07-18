@@ -1,3 +1,4 @@
+'''
 from deck import deck
 from dealer import dealer
 from game import game
@@ -33,4 +34,38 @@ g.addPlayer(be)
 g.addPlayer(be1)
 #run the game
 g.gameLoop(numDecks = 50)
+'''
+
+from network import network
+from layer import layer
+
+n = network()
+l = layer(size = 5)
+l1 = layer(size = 2)
+out = layer(names = ['out'] )
+
+n.addLayer(l)
+n.addLayer(l1)
+n.addOutputLayer(out)
+
+expected0 = {'out':0}
+expected1 = {'out':1}
+
+for i in xrange(0, 10000):
+    '''
+    if i % 2:
+        print 'training 1'
+        n.train( [1,1,1,1,1], expected1 )
+    else:
+        print 'training 0'
+        n.train( [0,0,0,0,0], expected0 )
+    '''
+    n.train( [1,1,1,1,1], expected0 )
+    print 'training run', i, 'complete'
+o = n.run( [1,1,1,1,1] )
+print o
+'''
+o = n.run( [0,0,0,0,0] )
+print o
+'''
 
