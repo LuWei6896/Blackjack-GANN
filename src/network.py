@@ -2,134 +2,35 @@ from layer import layer
 from neuron import neuron
 from util import util
 
-#TODO: why isn't activateDerivative working
-#make sure that output is storing
-#basic neural network class
 class network(object):
-    def __init__(self):
+    def __init__(self, lr = None):
+        self.learningRate = lr if lr else 0.5
+
         self.layers = []
-        self.learningRate = 0.01
 
-    '''
-    expected is a dictionary with neuron names and expected outputs
-    eg:
-    {
-        'hit': 1,
-        'stay':0
-    }
-    '''
-    #train the network given inputs, expected outputs, and an optional catcher netowkr for training the players
-    def train(self, inputs, expected, catcher = None): 
-        '''
-        #run and store intermediate values
-        self.run(inputs)
-        #backpropogate
-        for l in reversed(self.layers):
-            for i, n in enumerate(l.neurons):
-                #if output layer, derivative is slightly different
-                if l is self.layers[-1]:
-                    l.neurons[i].deriv = -(expected[n.getName()] - n.getOutput())
-                    #print 'n activate', n.activateDerivative()
-                    #print 'n output', n.getOutput()
-                    l.neurons[i].deriv = l.neurons[i].deriv * ( n.activateDerivative() )
-                    #print 'n deriv', l.neurons[i].deriv
-                else:
-                    for nO in n.getOutputNeurons():
-                        util.updateDerivative(l.neurons[i], nO) # (dOut/dnO)*(dnO/dn)*(dn/dnIn) TODO: double check this function
-                c = 0
-                delt = []
-                for w in n.weights:
-                    delt.append( self.learningRate * n.inputNeurons[c].getOutput() * n.deriv ) #lr * (dOut/dnIn) * (dnIn/dW)
-                    c = c + 1
-                l.neurons[i].weightDeltas = delt
-                '''
-        self.run(inputs)
-        for l in reversed(self.layers):
-            l.train(expected, self.learningRate)
-
-        if catcher is not None:
-            retList = []
-            for l in reversed(catcher.layers):
-                for n in l:
-                    if l is catcher.layers[-1]: 
-                        n.deriv = - (0 - n.getOutput() ) * n.activateDerivative()
-                    else:
-                        for nO in n.getOutputNeurons():
-                            util.updateDerivative(n, nO)
-                        if l is catcher.layers[1]:
-                            retList.append(n.deriv)
-            for l in reversed( self.layers ):
-                for n in l:
-                    if l is self.layers[-1]:
-                        if n.name is 'hit':
-                            n.deriv = retList['hit']
-                        elif n.name is 'stay':
-                            n.deriv = retList['stay']
-                        else:
-                            pass
-                        n.deriv = n.deriv * n.activateDerivative()
-                    else:
-                        for nO in n.getOutputNeurons():
-                            util.updateDerivative(n, nO) # (dOut/dnO)*(dnO/dn)*(dn/dnIn)
-                    c = 0
-                    for w, wd in n.weights, n.weightDeltas:
-                        wd = wd + ( self.learningRate * n.inputs[count].getOutput() * n.deriv ) #lr * (dOut/dnIn) * (dnIn/dW)
-                        c = c + 1
-   
-        self.applyDeltas()
-        #print 'weights for output', self.layers[-1].getNeurons()[0].getWeights()
-        #print 'weight deltas for output', self.layers[-1].getNeurons()[0].getWeightDeltas()
-        '''
-        n = self.layers[1].getNeurons()[0]
-        print 'output', n.getOutput()
-        print 'n deriv', n.deriv
-        print 'n activate', n.activateDerivative()
-        print 'n output', n.getOutput()
-        print 'n deriv', n.deriv
-        print 'n weights', n.weights
-        '''
-
-
-
-    def applyDeltas(self):
-        for l in self.layers:
-            l.applyDeltas()
-                
-
-
-    
-    #run the network given inputs
-    def run(self, inputs):
-        #print 'running first layer'
-        self.layers[0].inputRun(inputs) 
-        c = 0
-        for l in self.layers[1:]:
-            #print 'running layer', c
-            l.run()
-            c = c + 1
-        out = []
-        for n in self.layers[-1].getNeurons():
-            out.append( (n.getName(), n.getOutput()) )
-        return out
-    
-    #add a layer to the network
     def addLayer(self, l):
         self.layers.append(l)
 
-    #add the final layer and connect everything
     def addOutputLayer(self, l):
         self.layers.append(l)
-        self.connectLayers()
+        self.connect()
+    
+    def connect(self):
+        self.layers[0].connect(forward = self.layers[1].neurons)
+        self.layers[-1].connect(backward = self.layers[-2].neurons)
+        for i in range(len(self.layers) - 2):
+            self.layers[i + 1].connect(forward = self.layers[i + 2].neurons, backward = self.layers[i].neurons)
 
-    #connect the neurons in every layer to the neurons in the previous and next layers
-    def connectLayers(self):
-        count = 0
-        for l in self.layers:
-            if l is self.layers[0]:
-                l.connectLayer(pLayer = None, nLayer = self.layers[count + 1])
-            elif l is self.layers[-1]:
-                l.connectLayer(pLayer = self.layers[count - 1], nLayer = None)
-            else:
-                l.connectLayer(pLayer = self.layers[count - 1], nLayer = self.layers[count + 1])
-            count = count + 1
+    def run(self, values):
+        self.layers[0].run(values)
+        for i in range(len(self.layers) - 1):
+            self.layers[i + 1].run()
+        out = [(x.name, x.output) for x in self.layers[-1].neurons]
+        print out
+        return out
 
+    def train(self, inputs, expected):
+        self.run(inputs)
+        self.layers[-1].train(self.learningRate, expected)
+        for l in reversed(self.layers[:-1]):
+            l.train(self.learningRate)

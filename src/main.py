@@ -35,7 +35,7 @@ g.addPlayer(be1)
 #run the game
 g.gameLoop(numDecks = 50)
 '''
-
+'''
 from network import network
 from layer import layer
 
@@ -56,14 +56,6 @@ expected0 = {'out':0}
 expected1 = {'out':1}
 
 for i in xrange(0, 5000):
-    '''
-    if i % 2:
-        print 'training 1'
-        n.train( [1,1,1,1,1], expected1 )
-    else:
-        print 'training 0'
-        n.train( [0,0,0,0,0], expected0 )
-        '''
     n.train( [0,0,0,0,0], expected0 )
     n.train( [1,1,1,1,1], expected1 )
     print 'training run', i, 'complete'
@@ -72,4 +64,20 @@ o = n.run( [1,1,1,1,1] )
 print o
 o = n.run( [0,0,0,0,0] )
 print o
+'''
 
+from network import network
+from layer import layer
+
+layer(size = 5)
+l1 = layer(names = ['l', 'r'])
+n = network()
+n.addLayer(layer(size = 5))
+n.addLayer(layer(size = 5))
+n.addLayer(layer(size = 5))
+n.addOutputLayer(l1)
+for i in range(10000):
+    n.train([1,1,1,1,1], [1.0, 0.0])
+    n.train([0,0,0,0,0], [0.0, 1.0])
+
+n.run([1,1,1,1,1])

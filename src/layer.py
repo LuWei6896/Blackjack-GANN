@@ -1,49 +1,37 @@
 from neuron import neuron
 import random
 
-#layer of a neural network
+
 class layer(object):
-    def __init__(self, size = None, names = None):
-        #add a layer of neurons with just a size
+    def __init__(self, size = None, names = None, bias = None):
+        self.bias = bias if bias else random.random()
         self.neurons = []
         if size is not None:
-            self.neurons = [ neuron() ] * size
+           for i in range(size):
+               self.neurons.append(neuron() )
         else:
-            #add neurons with names
             for n in names:
-                self.neurons.append( neuron(n) )
-        #bias for this layer
-        self.bias = random.random()
-    #run the layer 
-    def run(self):
-        for n in self.neurons:
-            n.run(self.bias)
-    
-    #connect layer to previous and next layers
-    def connectLayer(self, pLayer = None, nLayer = None):
-        for n in self.neurons:
-            n.connect(pLayer, nLayer)
+                self.neurons.append( neuron(name = n) )
 
-    def getNeurons(self):
-        return self.neurons
 
-    def inputRun(self, values):
-        for n, v in zip(self.neurons, values):
-            n.inputRun(v)
+    def run(self, values = None):
+        for i in range(len(self.neurons)):
+            self.neurons[i].run(values[i] if values else None, bias = self.bias)
 
-    def applyDeltas(self):
-        for n in self.neurons:
-            n.applyDeltas()
- 
-    def train(self, expected, lr):
-        
-        for i, n in enumerate(self.neurons):
-            self.neurons[i].train(expected, lr)
-        sm = 0.0
-        for n in self.neurons:
-            sm = sm + n.deriv
-        #print 'sum of all derivs', sm
-        #print 'bias', self.bias
-        
-        self.bias = self.bias - (lr * sm)
-        #print 'new bias', self.bias
+    def train(self, lr, expected = None):
+        if expected is not None:
+            for i in range(len(self.neurons)):
+                self.neurons[i].train(lr, expected[i])
+        else:
+            for i in range(len(self.neurons)):
+                self.neurons[i].train(lr)
+            #train bias
+            sm = 0.0
+            for n in self.neurons:
+                sm = sm + n.deriv
+            self.bias = self.bias - (lr * sm)
+
+    def connect(self, backward = None, forward = None):
+        for i in range(len(self.neurons)):
+            self.neurons[i].connect(backward = backward, forward = forward)
+
