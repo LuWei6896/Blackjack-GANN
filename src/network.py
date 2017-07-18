@@ -8,11 +8,11 @@ class network(object):
 
         self.layers = []
 
-    def addLayer(self, l):
-        self.layers.append(l)
+    def addLayer(self, size):
+        self.layers.append(layer(size = size))
 
-    def addOutputLayer(self, l):
-        self.layers.append(l)
+    def addOutputLayer(self, names):
+        self.layers.append(layer(names = names))
         self.connect()
     
     def connect(self):

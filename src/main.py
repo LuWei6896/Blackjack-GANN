@@ -69,15 +69,15 @@ print o
 from network import network
 from layer import layer
 
-layer(size = 5)
-l1 = layer(names = ['l', 'r'])
 n = network()
-n.addLayer(layer(size = 5))
-n.addLayer(layer(size = 5))
-n.addLayer(layer(size = 5))
-n.addOutputLayer(l1)
+n.addLayer(5)
+n.addLayer(5)
+n.addLayer(5)
+n.addOutputLayer(['l'])
 for i in range(10000):
-    n.train([1,1,1,1,1], [1.0, 0.0])
-    n.train([0,0,0,0,0], [0.0, 1.0])
+    #n.train([1,1,1,1,1], [1.0, 0.0])
+    #n.train([0,0,0,0,0], [0.0, 1.0])
+    n.train([1,1,1,1,1], [1.0])
+    n.train([0,0,0,0,0], [0.0])
 
 n.run([1,1,1,1,1])
