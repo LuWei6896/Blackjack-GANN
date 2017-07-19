@@ -1,4 +1,5 @@
 from layer import layer
+import json
 from neuron import neuron
 from util import util
 
@@ -34,3 +35,16 @@ class network(object):
         self.layers[-1].train(self.learningRate, expected)
         for l in reversed(self.layers[:-1]):
             l.train(self.learningRate)
+    
+    def toJSON(self):
+        d = []
+        for l in self.layers:
+            ld = {'neurons': [], 'bias': l.bias}
+            for n in l.neurons:
+                ld['neurons'].append( { 'name': n.name if n.name else '', 'weights': [x for x in n.weights] })
+            d.append( ld )
+        print d
+        j = json.dumps(d) 
+        r = json.loads(j)
+        return d
+                

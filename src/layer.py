@@ -3,7 +3,7 @@ import random
 
 
 class layer(object):
-    def __init__(self, size = None, names = None, bias = None):
+    def __init__(self, size = None, names = None, bias = None, js = None): #JS is for loading from a json file
         self.bias = bias if bias else random.random()
         self.neurons = []
         if size is not None:

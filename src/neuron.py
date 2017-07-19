@@ -50,7 +50,7 @@ class neuron(object):
         self.deriv = 0.0
         if expected is not None:
             self.deriv = -(expected - self.output) * self.activateDerivative()
-            #print '-(', expected, '-', self.output,') *', self.output, '(1 -', self.output, ') = ', self.deriv
+            print '-(', expected, '-', self.output,') *', self.output, '(1 -', self.output, ') = ', self.deriv
         else:
             for nO in self.outputNeurons:
                 self.deriv = self.deriv + (nO.getWeightForNeuron(self) * nO.deriv)
