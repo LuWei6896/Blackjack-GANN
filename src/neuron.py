@@ -53,8 +53,9 @@ class neuron(object):
             print 'error: ', self.error(expected)
         else:
             for nO in self.outputNeurons:
-                self.deriv = self.deriv + (nO.getWeightForNeuron(self) * nO.deriv * self.activateDerivative())
+                self.deriv = self.deriv + (nO.getWeightForNeuron(self) * nO.deriv)
                 #print 'update deriv =', self.deriv
+            self.deriv *= self.activateDerivative()
         
         for i, w in enumerate(self.weights):
             delt = (lr * self.deriv * self.inputNeurons[i].output) 
