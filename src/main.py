@@ -68,17 +68,22 @@ print o
 
 from network import network
 from layer import layer
+import json
+import random
 
-n = network()
+n = network(lr = .3)
+n.addLayer(2)
 n.addLayer(5)
 n.addLayer(5)
-n.addLayer(5)
-n.addOutputLayer(['l', 'r'])
+n.addOutputLayer(['o'])
+print n
 for i in range(10000):
-    n.train([1,1,1,1,1], [1.0, 0.0])
-    n.train([0,0,0,0,0], [0.0, 1.0])
-    #n.train([1,1,1,1,1], [1.0])
-    #n.train([0,0,0,0,0], [0.0])
+    o = n.train([1, 0], [0])
+    o = n.train([0, 1], [0])
+    o = n.train([1, 1], [1])
+    o = n.train([0, 0], [0])
 
-n.run([1,1,1,1,1])
-n.toJSON()
+print '1, 0', n.run([1, 0])
+print '0, 1', n.run([0, 1])
+print '0, 0', n.run([0, 0])
+print '1, 1', n.run([1, 1])

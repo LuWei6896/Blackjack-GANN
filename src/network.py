@@ -9,6 +9,9 @@ class network(object):
 
         self.layers = []
 
+    def __str__(self):
+        return str([str(l) for l in self.layers])
+
     def addLayer(self, size):
         self.layers.append(layer(size = size))
 
@@ -26,15 +29,15 @@ class network(object):
         self.layers[0].run(values)
         for i in range(len(self.layers) - 1):
             self.layers[i + 1].run()
-        out = [(x.name, x.output) for x in self.layers[-1].neurons]
-        print out
-        return out
+        output = [(x.name, x.output) for x in self.layers[-1].neurons]
+        return output
 
     def train(self, inputs, expected):
-        self.run(inputs)
+        run = self.run(inputs)
         self.layers[-1].train(self.learningRate, expected)
         for l in reversed(self.layers[:-1]):
             l.train(self.learningRate)
+        return run
     
     def toJSON(self):
         d = []
@@ -43,8 +46,19 @@ class network(object):
             for n in l.neurons:
                 ld['neurons'].append( { 'name': n.name if n.name else '', 'weights': [x for x in n.weights] })
             d.append( ld )
-        print d
         j = json.dumps(d) 
         r = json.loads(j)
-        return d
+        return r
+    
                 
+    def fromJSON(self, js):
+        for l in js:
+            self.layers.append( layer(js = l) )
+        self.connect()
+
+    def saveToFile(self, fname = 'network.nw'):
+        f = open(fname, 'w')
+        f.write( json.dumps( self.toJSON() ) )
+
+    def fromFile(self, fname = 'network.nw'):
+        self.fromJSON( json.loads(open(fname, 'r').readline()) )
