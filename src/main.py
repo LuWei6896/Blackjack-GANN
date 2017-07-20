@@ -1,4 +1,3 @@
-'''
 from deck import deck
 from dealer import dealer
 from game import game
@@ -35,7 +34,6 @@ g.addPlayer(be1)
 #run the game
 g.gameLoop(numDecks = 50)
 '''
-'''
 from network import network
 from layer import layer
 
@@ -66,6 +64,7 @@ o = n.run( [0,0,0,0,0] )
 print o
 '''
 
+'''
 from network import network
 from layer import layer
 import json
@@ -87,3 +86,4 @@ print '1, 0', n.run([1, 0])
 print '0, 1', n.run([0, 1])
 print '0, 0', n.run([0, 0])
 print '1, 1', n.run([1, 1])
+'''
