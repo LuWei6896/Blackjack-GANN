@@ -4,13 +4,26 @@ from neuron import neuron
 from util import util
 
 class network(object):
-    def __init__(self, lr = None):
+    def __init__(self, lr = None, inputs = None,  hidden = None, outputs = None, file = None):
         self.learningRate = lr if lr else 0.5
 
         self.layers = []
+        if hidden is not None:
+            self.addInputLayer(inputs)
+            for v in hidden:
+                self.addLayer(v)
+            self.addOutputLayer(outputs)
+            self.connect()
+        if file is not None:
+            self.fromFile(file = file)
+
+
 
     def __str__(self):
         return str([str(l) for l in self.layers])
+    
+    def addInputLayer(self, names):
+        self.layers.append( layer(names = names) )
 
     def addLayer(self, size):
         self.layers.append(layer(size = size))
@@ -29,16 +42,28 @@ class network(object):
         self.layers[0].run(values)
         for i in range(len(self.layers) - 1):
             self.layers[i + 1].run()
-        output = [(x.name, x.output) for x in self.layers[-1].neurons]
+        output = {}
+        for x in self.layers[-1].neurons:
+            output[x.name] = x.output
         return output
 
-    def train(self, inputs, expected):
+    def train(self, inputs, expected, noTrain = None):
         run = self.run(inputs)
-        self.layers[-1].train(self.learningRate, expected)
+        self.layers[-1].train(self.learningRate, expected, noTrain = noTrain)
         for l in reversed(self.layers[:-1]):
             l.train(self.learningRate)
         return run
-    
+
+    def getDeltas(self, inputs, expected):
+        run = self.run(inputs)
+        self.layers[-1].train(self.learningRate, expected, noTrain = True)
+        for l in reversed(self.layers[:-1]):
+            l.train(self.learningRate)
+        out = []
+        for n in self.layers[0].neurons:
+            out.append( (n.name, n.deriv) )
+        return out
+
     def toJSON(self):
         d = []
         for l in self.layers:
@@ -49,7 +74,6 @@ class network(object):
         j = json.dumps(d) 
         r = json.loads(j)
         return r
-    
                 
     def fromJSON(self, js):
         for l in js:

@@ -71,11 +71,7 @@ from layer import layer
 import json
 import random
 
-n = network(lr = .3)
-n.addLayer(2)
-n.addLayer(5)
-n.addLayer(5)
-n.addOutputLayer(['o'])
+n = network(lr = .3, inputs = ['top', 'bottom'],  hidden = [5, 5], outputs = ['output'])
 print n
 for i in range(10000):
     o = n.train([1, 0], [0])
@@ -83,7 +79,8 @@ for i in range(10000):
     o = n.train([1, 1], [1])
     o = n.train([0, 0], [0])
 
-print '1, 0', n.run([1, 0])
-print '0, 1', n.run([0, 1])
-print '0, 0', n.run([0, 0])
-print '1, 1', n.run([1, 1])
+print '1, 0', n.run([1, 0])['output']
+print '0, 1', n.run([0, 1])['output']
+print '0, 0', n.run([0, 0])['output']
+print '1, 1', n.run([1, 1])['output']
+print n.getDeltas( [1, 1], [1])

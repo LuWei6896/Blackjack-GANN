@@ -26,13 +26,13 @@ class layer(object):
         for i in range(len(self.neurons)):
             self.neurons[i].run(values[i] if values else None, bias = self.bias)
 
-    def train(self, lr, expected = None):
+    def train(self, lr, expected = None, noTrain = None):
         if expected is not None:
             for i in range(len(self.neurons)):
-                self.neurons[i].train(lr, expected[i])
+                self.neurons[i].train(lr, expected[i], noTrain = noTrain)
         else:
             for i in range(len(self.neurons)):
-                self.neurons[i].train(lr)
+                self.neurons[i].train(lr, noTrain = noTrain)
             #train bias
             '''
             sm = 0.0

@@ -45,7 +45,7 @@ class neuron(object):
         #print 'weight for neuron', v
         return v 
 
-    def train(self, lr, expected = None):
+    def train(self, lr, expected = None, noTrain = None):
         #print 'new neuron training'
         self.deriv = 0.0
         if expected is not None:
@@ -56,10 +56,10 @@ class neuron(object):
                 self.deriv = self.deriv + (nO.getWeightForNeuron(self) * nO.deriv)
                 #print 'update deriv =', self.deriv
             self.deriv *= self.activateDerivative()
-        
-        for i, w in enumerate(self.weights):
-            delt = (lr * self.deriv * self.inputNeurons[i].output) 
-            self.weights[i] = w - delt
+        if noTrain is None: 
+            for i, w in enumerate(self.weights):
+                delt = (lr * self.deriv * self.inputNeurons[i].output) 
+                self.weights[i] = w - delt
             #print self.name if self.name is not None else '', 'delta weight', delt 
 
     def error(self, expected):
