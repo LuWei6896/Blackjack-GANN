@@ -72,15 +72,13 @@ import json
 import random
 
 n = network(lr = .3, inputs = ['top', 'bottom'],  hidden = [5, 5], outputs = ['output'])
-print n
 for i in range(10000):
-    o = n.train([1, 0], [0])
-    o = n.train([0, 1], [0])
-    o = n.train([1, 1], [1])
-    o = n.train([0, 0], [0])
-
+    o1 = n.train([1, 0], [1])
+    o2 = n.train([0, 1], [1])
+    o3 = n.train([1, 1], [0])
+    o4 = n.train([0, 0], [0])
+    
 print '1, 0', n.run([1, 0])['output']
 print '0, 1', n.run([0, 1])['output']
 print '0, 0', n.run([0, 0])['output']
 print '1, 1', n.run([1, 1])['output']
-print n.getDeltas( [1, 1], [1])
