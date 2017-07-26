@@ -32,7 +32,7 @@ class game(object):
         #add the catcher once we create it, but for now it is nothing
         self.catcher = None
         #reseed deck if there is less than this many cards in the deck
-        self.minDeckCount = 20
+        self.minDeckCount = 30
         
         #track win/loss history for all players
         self.hst = histogram()
@@ -40,7 +40,7 @@ class game(object):
     def playHand(self, table):
         #play all players
         for p in self.tables[table]:
-            p.play(self.decks[table], self.dealers[table], self.tables[table])
+            p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'poker')
         
         #play dealer last
         self.dealers[table].play(self.decks[table])
@@ -102,7 +102,13 @@ class game(object):
     def addPlayer(self, p):
         #self.players.append(p)
         #TODO: uncomment above. This is just rigged for testing
+        #im just trying to finish this, so this is a lazy workaround, i am truly sorry i'll fix it later
         self.tables['first'].append(p)
+        self.reseed()
+
+
+    def addCatcher(self, catcher):
+        self.catcher = catcher
     
     #once every table has gone through 10 complete decks, the game finishes
     def gameLoop(self, numDecks = 10):
@@ -110,6 +116,7 @@ class game(object):
         self.hst.addPlayers(self.players)
         #run all games
         for i in range(0, numDecks):
+            print 'Playing game', i, 'on every table'
             self.playGame('first')
             self.playGame('second')
             self.playGame('third')

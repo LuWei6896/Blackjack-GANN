@@ -1,15 +1,10 @@
-'''
-this is a card counting network that uses the basic Hi-Lo counting strategy
-
-'''
+#TODO: add initial running count for unbalanced system
+#TODO: check why seven is 0 or 1 and when to use which value
 from counter import counter
-
-
-class HiLo(counter):
+class Red7(counter):
     def __init__(self, netDict = None):
         counter.__init__(self, netDict = netDict)
-        #this maps the cards to their respective count values
-        self.strategy = 'HiLo'
+        self.strategy = 'Red7'
         self.name = self.strategy
         self.countMap = {
                 '2': 1,
@@ -17,10 +12,9 @@ class HiLo(counter):
                 '4': 1,
                 '5': 1,
                 '6': 1,
-                '7': 0,
+                '7': 0,#or 1
                 '8': 0,
                 '9': 0,
                 '10': -1,
                 '11': -1
                }
-

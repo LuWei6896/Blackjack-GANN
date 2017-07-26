@@ -53,3 +53,6 @@ class deck(object):
     #print the deck for debugging
     def __str__(self):
         return ' '.join(str(e) for e in self.cards)
+    
+    def getHistory(self):
+        return self.history

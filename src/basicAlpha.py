@@ -34,16 +34,28 @@ class basicAlpha(player):
                 ['n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n', 'n']#21
             ]
 
-    def play(self, deck, dealer, table = None):
+    def play(self, deck, dealer, table = None, catcher = None, trainMethod = None):
         while not self.isStaying():
             #get the table address to look at depending on player hand total, and dealer up card
             dAdd = dealer.getUpCard()
             pAdd = self.getCount()
             #play depending on strategy table
+            prevCount = self.getCount()
+            decision = None
             if self.strategyTable[pAdd][dAdd] is 's':
                 self.stay()
+                decision = 'stay'
             else:
                 self.hit(deck)
+                decision = 'hit'
+            if catcher is not None:
+                dealtCard = self.getCount() - prevCount
+                move = None
+                if decision is 'hit':
+                    move = 1
+                else:
+                    move = 0
+                catcher.train(prevCount, move, dealtCard, [int(self.isCounting)])
 
         self.checkBust() 
         return self.getCount()

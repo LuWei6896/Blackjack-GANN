@@ -35,26 +35,40 @@ class basicBeta(player):
             ]
 
 
-        def play(self,  deck,  dealer, table = None):
-            while not self.isStaying():
-                #get table addresses 
-                dAdd = dealer.getUpCard()
-                pAdd = self.getCount()
-                #take action depending on address
-                if self.strategyTable[pAdd][dAdd] is 's':
-                    self.stay()
-                elif self.strategyTable[pAdd][dAdd] is 'h':
-                    self.hit(deck)
-                elif self.strategyTable[pAdd][dAdd] is 'd':
-                    #you can only double down on your first hit
-                    if len(self.upCards) is 2:
-                        self.doubleDown(deck)
-                    else:
-                        self.hit(deck)
+    def play(self,  deck,  dealer, table = None, catcher = None, trainMethod = None):
+        while not self.isStaying():
+            #get table addresses 
+            dAdd = dealer.getUpCard()
+            pAdd = self.getCount()
+            #take action depending on address
+            prevCount = self.getCount()
+            decision = None
+            if self.strategyTable[pAdd][dAdd] is 's':
+                self.stay()
+                decision = 'stay'
+            elif self.strategyTable[pAdd][dAdd] is 'h':
+                self.hit(deck)
+                decision = 'hit'
+            elif self.strategyTable[pAdd][dAdd] is 'd':
+                #you can only double down on your first hit
+                if len(self.upCards) is 2:
+                    self.doubleDown(deck)
+                    decision = 'hit'
                 else:
-                    pass
+                    self.hit(deck)
+                    decision = 'hit'
+            else:
+                pass
+            if catcher is not None: 
+                dealtCard = self.getCount() - prevCount
+                move = None
+                if decision is 'hit':
+                    move = 1
+                else:
+                    move = 0
+                catcher.train(prevCount, move, dealtCard, [int(self.isCounting)])
 
-            self.checkBust()
-            return self.getCount()
+        self.checkBust()
+        return self.getCount()
 
 

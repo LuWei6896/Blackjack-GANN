@@ -5,6 +5,14 @@ from util import util
 
 #neural network class
 class network(object):
+    #initialize the network with the following parameters
+    '''
+    lr - learning rate of the network. defaults to 0.5 if not specified (float)
+    inputs - names of input neurons (array)
+    hidden - the number of neurons in each hidden layer. ex [2, 4, 2] means 2 neurons in the first hidden layer, 4 in the second, and 2 in the third (array)
+    outputs - names of output neurons (array)
+    file - filename from which to load the network (string)
+    '''
     def __init__(self, lr = None, inputs = None,  hidden = None, outputs = None, file = None):
         #learning rate
         self.learningRate = lr if lr else 0.5
@@ -22,18 +30,29 @@ class network(object):
             self.fromFile(file = file)
 
     #print the network info
+    #really for debugging purposes
     def __str__(self):
         return str([str(l) for l in self.layers])
    
+
     #add layer of input neurons
+    '''
+    names - array of names of input neurons (array)
+    '''
     def addInputLayer(self, names):
         self.layers.append( layer(names = names) )
 
     #add hidden layer
+    '''
+    size - neurons in the layer (int)
+    '''
     def addLayer(self, size):
         self.layers.append(layer(size = size))
 
     #add a layer of output neurons
+    '''
+    names - array of names of output neurons (array)
+    '''
     def addOutputLayer(self, names):
         self.layers.append(layer(names = names))
         self.connect()
@@ -44,7 +63,11 @@ class network(object):
         self.layers[-1].connect(backward = self.layers[-2].neurons)
         for i in range(len(self.layers) - 2):
             self.layers[i + 1].connect(forward = self.layers[i + 2].neurons, backward = self.layers[i].neurons)
+
     #run the network
+    '''
+    values - array of values to be fed into the network. should be in matching order to order of neurons they represent  (array)
+    '''
     def run(self, values):
         #run the input layer with values
         self.layers[0].run(values)
@@ -58,6 +81,12 @@ class network(object):
         return output
 
     #train the network 
+    '''
+    inputs - array of inputs to be fed into the network. should be in matching order to order of neurons they represent (array)
+    expected - array of expected outputs to be used in backpropogation. should be in matching order to the neurons they represent (array)
+    noTrain - boolean value telling us if we should train or not. if we don't train, we save deltas through the whole network so that we can act like we are attaching the catcher network to a counter network (bool)
+    catcher - the network of the card counting catcher, to be used for training as a generative adversarial neural network
+    '''
     def train(self, inputs, expected, noTrain = None, catcher = None):
         #run the network to store activations
         run = self.run(inputs)
@@ -86,6 +115,10 @@ class network(object):
         return run
 
     #method used to retrieve the partial derivative of the error in respect to the input neurons of the network (made specifically for the catcher network to be able to retrieve its input deltas
+    '''
+    inputs - an array of inputs to be fed into the network. should be in matching order to order of neurons they represent (array)
+    expected - the value we want the catcher network to output. for all counters this is [0.0] (array)
+    '''
     def getDeltas(self, inputs, expected):
         #run to get activations
         run = self.run(inputs)
@@ -115,16 +148,39 @@ class network(object):
         return r
     
     #load the network from a json object 
+    '''
+    js - valid json object representation of a network (json)
+    '''
     def fromJSON(self, js):
         for l in js:
             self.layers.append( layer(js = l) )
         self.connect()
 
     #save the network as a json object to a file 
+    '''
+    fname - the file to save to (string)
+    '''
     def saveToFile(self, fname = 'network.nw'):
         f = open(fname, 'w')
         f.write( json.dumps( self.toJSON() ) )
 
     #load the network from a json file 
+    '''
+    fname - the file to load from (string)
+    '''
     def fromFile(self, fname = 'network.nw'):
         self.fromJSON( json.loads(open(fname, 'r').readline()) )
+
+    '''
+    runOutput - the probabilistic output of the neural network 
+    '''
+    @staticmethod
+    #get the neuron with the highest output
+    def getBestDecision(runOutput):
+        #TODO: replace with pythonic way, i just don't know it and i dont have wifi
+        maxK, maxV = '', 0.0
+        for k in runOutput:
+            if runOutput[k] > maxV:
+                maxV = runOutput[k]
+                maxK = k
+        return maxK

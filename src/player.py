@@ -34,7 +34,7 @@ class player(object):
     def getCount(self):
         return sum( self.upCards )
 
-    def play(self, deck, dealer, table = None):
+    def play(self, deck, dealer, table = None, catcher = None, trainMethod = None):
         return self.getCount()
 
     def hit(self, deck):
@@ -71,6 +71,7 @@ class player(object):
         else:
             self.bust = False
             return False
+
     def isStaying(self):
         return self.staying
 
