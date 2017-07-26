@@ -17,11 +17,10 @@ from Red7 import Red7
 from Zen import Zen
 
 
-
 netDict = {
-        'lr': .3,
+        'lr': .05,
         'inputs': ['count', 'hand', 'dealerUp'],
-        'hidden': [10, 10, 10, 5],
+        'hidden': [50, 50, 25, 10, 5],
         'outputs': ['hit', 'stay']
         }
 
@@ -66,7 +65,7 @@ g.addPlayer(HV)
 g.addPlayer(O)
 g.addPlayer(R7)
 g.addPlayer(Z)
-cNet = network(lr = .3, inputs = ['HiLo', 'KO', 'HiOpt1', 'HiOpt2', 'Halves', 'Omega2', 'Red7', 'Zen', 'Hand', 'hit', 'stay', 'Dealt'],  hidden = [10, 10, 10, 5], outputs = ['output'])
+cNet = network(lr = .5, inputs = ['HiLo', 'KO', 'HiOpt1', 'HiOpt2', 'Halves', 'Omega2', 'Red7', 'Zen', 'Hand', 'hit', 'stay', 'Dealt'],  hidden = [20, 20, 10, 5], outputs = ['output'])
 c = catcher(cNet)
 c.addCounter(HL)
 c.addCounter(HO1)
@@ -79,8 +78,11 @@ c.addCounter(Z)
 
 g.addCatcher(c)
 #run the game
-g.gameLoop(numDecks = 1000)
-c.network.saveToFile('fin.nw')
+try:
+    g.gameLoop(numDecks = 10000)
+    c.network.saveToFile('fin.nw')
+except KeyboardInterrupt:
+    c.network.saveToFile('fin.nw')
 '''
 from network import network
 from layer import layer

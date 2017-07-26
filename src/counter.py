@@ -88,7 +88,10 @@ class counter(player):
     def getTableCount(self, deck):
         count = 0.0
         arr = deck.getHistory()
+        numCards = len(arr)
+        numDecks = float(numCards) / 52.0
         #for every card present on the table, update the count that this network uses
         for card in arr:
             count += self.countMap[str(card)]
-        return count
+        #print 'for cards', arr, 'count is', count, 'for system', self.strategy
+        return count/numDecks

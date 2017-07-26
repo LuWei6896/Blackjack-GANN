@@ -33,6 +33,7 @@ class game(object):
         self.catcher = None
         #reseed deck if there is less than this many cards in the deck
         self.minDeckCount = 30
+        self.numGamesRun = 0
         
         #track win/loss history for all players
         self.hst = histogram()
@@ -40,14 +41,16 @@ class game(object):
     def playHand(self, table):
         #play all players
         for p in self.tables[table]:
-            p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'poker')
+            if self.numGamesRun < 1000:
+                p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'poker')
+            else:
+                p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'counting')
         
         #play dealer last
         self.dealers[table].play(self.decks[table])
         self.assessGame(table)
 
     def playGame(self, table):
-
         while self.decks[table].numCards() >= self.minDeckCount:
             #deal the initial hand to everyone
             for player in self.tables[table]:
@@ -116,11 +119,30 @@ class game(object):
         self.hst.addPlayers(self.players)
         #run all games
         for i in range(0, numDecks):
+            self.numGamesRun = i
             print 'Playing game', i, 'on every table'
             self.playGame('first')
             self.playGame('second')
             self.playGame('third')
             self.reseed()
+            if i % 100 == 0:
+                for p in self.players:
+                    if p.isCounting:
+                        h = self.hst.getHistogram(p)
+                        past = h[-100:]
+                        w, l, t = 0, 0, 0
+                        for c in past:
+                            if c is 'T':
+                                t += 1
+                            elif c is 'W':
+                                w += 1
+                            else:
+                                l += 1
+                        winRatio =  100.0 * ( float( w ) /float( w + l + t ) )
+                        winRatio = round(winRatio, 1)
+                        print p.strategy, 'won:', w, 'games, lost:', l, 'games, tied', t, 'games with a win ratio of', ( str(winRatio) + '%')
+                print ''
+
         #asses all games
         self.finalAssessment()
 
