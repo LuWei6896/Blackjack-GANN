@@ -55,7 +55,15 @@ class basicAlpha(player):
                     move = 1
                 else:
                     move = 0
-                catcher.train(prevCount, move, dealtCard, [int(self.isCounting)])
+
+                out = int(round( catcher.run(prevCount, move, 0 if move is 1 else 1)['output'] ))
+                diff = abs( out - int(self.isCounting) )
+                if diff == 0:
+                    catcher.updateRight()
+                else:
+                    catcher.updateWrong()
+
+                catcher.train(prevCount, move, 0 if move is 1 else 1, [int(self.isCounting)])
 
         self.checkBust() 
         return self.getCount()

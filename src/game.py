@@ -5,8 +5,7 @@ from player import player
 from dealer import dealer
 from histogram import histogram
 
-#TODO: make loss/win histogram for players
-#runs games of blackjack
+#TODO: make loss/win histogram for players #runs games of blackjack
 #blackjack has like 6 players per table so run many tables to train the catcher against many strategies
 class game(object):
     def __init__(self):
@@ -41,7 +40,7 @@ class game(object):
     def playHand(self, table):
         #play all players
         for p in self.tables[table]:
-            if self.numGamesRun < 1000:
+            if self.numGamesRun < 100:#1000
                 p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'poker')
             else:
                 p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'counting')
@@ -112,6 +111,7 @@ class game(object):
 
     def addCatcher(self, catcher):
         self.catcher = catcher
+        self.catcher.addHst(self.hst)
     
     #once every table has gone through 10 complete decks, the game finishes
     def gameLoop(self, numDecks = 10):
@@ -125,7 +125,11 @@ class game(object):
             self.playGame('second')
             self.playGame('third')
             self.reseed()
+            print ''
+            print 'Catcher is', (str(round( 100.0 * float(self.hst.getCatcherInfo()['right']) / float( self.hst.getCatcherInfo()['wrong'] + self.hst.getCatcherInfo()['right']), 1 )) + '%'), 'accurate overall'
+            print ''
             if i % 100 == 0:
+                print ''
                 for p in self.players:
                     if p.isCounting:
                         h = self.hst.getHistogram(p)

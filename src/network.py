@@ -2,6 +2,7 @@ from layer import layer
 import json
 from neuron import neuron
 from util import util
+from catcher import catcher
 
 #neural network class
 class network(object):
@@ -98,9 +99,9 @@ class network(object):
         if catcher is not None:
             for i in run:
                 crunInputs.append(run[i])
-            crun = catcher.run(crunInputs)
+            crun = catcher.run(inputs[1], crunInputs[0], crunInputs[1])
             #we want to make it so that the catcher doesnt think we are cheating (aka it outputs a 0% probability that we are cheating, hence the [0.0])
-            cDeltas = catcher.getDetlas(crunInputs, [0.0])
+            cDeltas = catcher.network.getDeltas(catcher.getValues(inputs[1], crunInputs[0], crunInputs[1]), [0.0])
         #train the output layer with expected outputs
         self.layers[-1].train(self.learningRate, expected, noTrain = noTrain)
         #train hidden layers backwards (backpropagate)
@@ -111,7 +112,7 @@ class network(object):
             #train with catcher deltas
             self.layers[-1].train(self.learningRate, noTrain = noTrain, catcherDeltas = cDeltas)
             for l in reversed(self.layers[:-1]):
-                l.train(self.learningRate, catcherDeltas = cDeltas)
+                l.train(self.learningRate, noTrain = noTrain)
         return run
 
     #method used to retrieve the partial derivative of the error in respect to the input neurons of the network (made specifically for the catcher network to be able to retrieve its input deltas

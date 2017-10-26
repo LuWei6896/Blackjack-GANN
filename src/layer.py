@@ -30,7 +30,10 @@ class layer(object):
     #run the layer
     def run(self, values = None):
         for i in range(len(self.neurons)):
-            self.neurons[i].run(values[i] if values else None, bias = self.bias)
+            if values is None:
+                self.neurons[i].run(None, bias = self.bias)
+            else:
+                self.neurons[i].run(values[i], bias = self.bias)
     
     #train the layer
     def train(self, lr, expected = None, noTrain = None, catcherDeltas = None):

@@ -66,7 +66,7 @@ class counter(player):
                 elif trainMethod is 'counting': #train both us and catcher against eachother 
                     #refer to document Project Notes to continue writing this
                     #train the network to make the appropriate move, also with respect to the catcher network
-                    self.network.train(arr, expected, catcher = catcher.network)
+                    self.network.train(arr, expected, catcher = catcher)
                     #TODO: there should be a more pythonic way to do this
                     #move = 1 if decision is 'hit' else 0
                     #assign a numerical value to the move made by the network
@@ -77,7 +77,16 @@ class counter(player):
                         move = 0
                     
                     #train the catcher network to recognize this player as card counting
-                    catcher.train(prevCount, move, dealtCard, [int(self.isCounting)])
+
+                    num = catcher.run(prevCount, move, 0 if move is 1 else 1)['output']
+                    out = int(round( num ))
+                    diff = abs( out - int(self.isCounting) )
+                    if diff == 0:
+                        catcher.updateRight()
+                    else:
+                        catcher.updateWrong()
+
+                    catcher.train(prevCount, move, 0 if move is 1 else 1, [int(self.isCounting)])
                     
         #we still need to tell the game whether or not we've busted            
         self.checkBust()

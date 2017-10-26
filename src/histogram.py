@@ -3,6 +3,13 @@
 class histogram(object):
     def __init__(self):
         self.dct = {}
+        self.catcherHst = {
+                'right': 0,
+                'wrong': 0,
+                'histogram': []
+                }
+
+            
     #add a player to track
     def addPlayer(self, p):
         if p.getID() not in self.dct:
@@ -57,6 +64,18 @@ class histogram(object):
                     'ties': tieCount,
                     'histogram': ['T'] * tieCount
                     }
+
+
+    def updateCatcherRight(self, rightCount = 1):
+        self.catcherHst['right'] = self.catcherHst['right'] + rightCount
+        h = ['W'] * rightCount
+        [self.catcherHst['histogram'].append(x) for x in h]
+
+    def updateCatcherWrong(self, wrongCount = 1):
+        self.catcherHst['wrong'] = self.catcherHst['wrong'] + wrongCount
+        h = ['L'] * wrongCount
+        [self.catcherHst['histogram'].append(x) for x in h]
+
     
     #get the histogram for one player
     def getHistogram(self, p):
@@ -64,6 +83,12 @@ class histogram(object):
             return self.dct[p.getID()]['histogram']
         else:
             return None
+
+    def getCatcherHistogram(self):
+        return self.catcherHst['histogram']
+
+    def getCatcherInfo(self):
+        return self.catcherHst
     
     #return all info for one player
     def getInfo(self, p):

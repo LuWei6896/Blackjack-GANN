@@ -19,6 +19,16 @@ class catcher(object):
         self.counters = []
         self.counts = {}
         self.values = None
+        self.hst = None
+
+    def addHst(self, h):
+        self.hst = h
+
+    def updateWrong(self, wrongCount = 1):
+        self.hst.updateCatcherWrong(wrongCount)
+    
+    def updateRight(self, rightCount = 1):
+        self.hst.updateCatcherRight(rightCount)
 
     def addCounter(self, counter):
         self.counters.append(counter)
@@ -28,24 +38,24 @@ class catcher(object):
         for player in self.counters:
             self.counts[player.strategy] = player.getCount()
 
-    def train(self, prevSum, move, dealtVal, expected, noTrain = None, catcher = None):
+    def train(self, prevSum, hit, stay, expected, noTrain = None, catcher = None):
         self.getCounts()
         c = self.counts
-        if move is 1:
-            values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, 1.0, 0.0, dealtVal]
-            self.values = values 
-        else:
-            values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, 0.0, 1.0, dealtVal]
-            self.values = values 
+        values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, hit, stay]
+        self.values = values 
+        out = self.run(prevSum, hit, stay)
+        
         self.network.train(values, expected, noTrain = noTrain, catcher = catcher)
 
-    def run(self, prevSum, move, dealtVal):
+    def run(self, prevSum, hit, stay):
         self.getCounts()
         c = self.counts #just so i don't have to type a million times
-        if move is 1:
-            values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, 1.0, 0.0, dealtVal]
-            self.values = values 
-        else:
-            values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, 0.0, 1.0, dealtVal]
-            self.values = values 
+        values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, hit, stay]
+        self.values = values 
         return self.network.run(values)
+
+    def getValues(self, prevSum, hit, stay):
+        self.getCounts()
+        c = self.counts
+        values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, hit, stay]
+        return values
