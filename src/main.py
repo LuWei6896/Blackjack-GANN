@@ -18,9 +18,9 @@ from Zen import Zen
 
 
 netDict = {
-        'lr': .05,
+        'lr': .01,
         'inputs': ['count', 'hand', 'dealerUp'],
-        'hidden': [50, 50, 25, 10, 5],
+        'hidden': [50, 50, 25, 20, 5],
         'outputs': ['hit', 'stay']
         }
 
@@ -65,7 +65,7 @@ g.addPlayer(HV)
 g.addPlayer(O)
 g.addPlayer(R7)
 g.addPlayer(Z)
-cNet = network(lr = .1, inputs = ['HiLo', 'KO', 'HiOpt1', 'HiOpt2', 'Halves', 'Omega2', 'Red7', 'Zen', 'Hand', 'hit', 'stay'],  hidden = [20, 20, 10, 5], outputs = ['output'])
+cNet = network(lr = .01, inputs = ['HiLo', 'KO', 'HiOpt1', 'HiOpt2', 'Halves', 'Omega2', 'Red7', 'Zen', 'Hand', 'hit', 'stay'],  hidden = [50, 50, 20, 5], outputs = ['output'])
 c = catcher(cNet)
 c.addCounter(HL)
 c.addCounter(HO1)

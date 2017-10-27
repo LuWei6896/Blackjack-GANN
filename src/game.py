@@ -40,7 +40,7 @@ class game(object):
     def playHand(self, table):
         #play all players
         for p in self.tables[table]:
-            if self.numGamesRun < 100:#1000
+            if self.numGamesRun < 1000:
                 p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'poker')
             else:
                 p.play(self.decks[table], self.dealers[table], table = self.tables[table], catcher = self.catcher, trainMethod = 'counting')
@@ -75,7 +75,7 @@ class game(object):
     def reseed(self):
         #get all of the players again, with their updated networks
         p1, p2, p3 = self.tables['first'], self.tables['second'], self.tables['third']
-        self.players = p1 + p2 + p3 #fuck python and not having references and stuff
+        self.players = p1 + p2 + p3 
         
         #reset all players
         for player in self.players:
@@ -102,9 +102,6 @@ class game(object):
         
 
     def addPlayer(self, p):
-        #self.players.append(p)
-        #TODO: uncomment above. This is just rigged for testing
-        #im just trying to finish this, so this is a lazy workaround, i am truly sorry i'll fix it later
         self.tables['first'].append(p)
         self.reseed()
 
@@ -115,6 +112,7 @@ class game(object):
     
     #once every table has gone through 10 complete decks, the game finishes
     def gameLoop(self, numDecks = 10):
+        f = open('catcher.csv', 'a')
         #track all players
         self.hst.addPlayers(self.players)
         #run all games
@@ -125,9 +123,22 @@ class game(object):
             self.playGame('second')
             self.playGame('third')
             self.reseed()
+            #print game statistics
             print ''
-            print 'Catcher is', (str(round( 100.0 * float(self.hst.getCatcherInfo()['right']) / float( self.hst.getCatcherInfo()['wrong'] + self.hst.getCatcherInfo()['right']), 1 )) + '%'), 'accurate overall'
+            pastNum = -1 *int(self.hst.catcherHst['count'])
+            past = self.hst.catcherHst['histogram'][ pastNum:]
+            self.hst.catcherHst['count'] = 0
+            w, l = 0, 0
+            for c in past:
+                if c is 'W':
+                    w += 1
+                else:
+                    l += 1
+            winRatio =  100.0 * ( float( w ) /float( w + l) )
+            winRatio = round(winRatio, 1)
+            print 'Catcher had an average accuracy of', (str(winRatio) + '%'), 'over those hands'
             print ''
+            f.write( str(i + 1) + ',' + str(winRatio) + '\n')
             if i % 100 == 0:
                 print ''
                 for p in self.players:
@@ -145,6 +156,9 @@ class game(object):
                         winRatio =  100.0 * ( float( w ) /float( w + l + t ) )
                         winRatio = round(winRatio, 1)
                         print p.strategy, 'won:', w, 'games, lost:', l, 'games, tied', t, 'games with a win ratio of', ( str(winRatio) + '%')
+                        f2 = open( str(p.strategy) + '.csv', 'a')
+                        f2.write( str( i+1 ) + ',' + str(winRatio) + '\n' )
+                        f2.close()
                 print ''
 
         #asses all games

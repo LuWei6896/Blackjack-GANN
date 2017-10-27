@@ -6,7 +6,8 @@ class histogram(object):
         self.catcherHst = {
                 'right': 0,
                 'wrong': 0,
-                'histogram': []
+                'histogram': [],
+                'count': 0
                 }
 
             
@@ -70,11 +71,13 @@ class histogram(object):
         self.catcherHst['right'] = self.catcherHst['right'] + rightCount
         h = ['W'] * rightCount
         [self.catcherHst['histogram'].append(x) for x in h]
+        self.catcherHst['count'] = self.catcherHst['count'] + rightCount
 
     def updateCatcherWrong(self, wrongCount = 1):
         self.catcherHst['wrong'] = self.catcherHst['wrong'] + wrongCount
         h = ['L'] * wrongCount
         [self.catcherHst['histogram'].append(x) for x in h]
+        self.catcherHst['count'] = self.catcherHst['count'] + wrongCount
 
     
     #get the histogram for one player
