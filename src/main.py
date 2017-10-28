@@ -18,7 +18,7 @@ from Zen import Zen
 
 
 netDict = {
-        'lr': .01,
+        'lr': .08,
         'inputs': ['count', 'hand', 'dealerUp'],
         'hidden': [50, 50, 25, 20, 5],
         'outputs': ['hit', 'stay']
@@ -65,7 +65,7 @@ g.addPlayer(HV)
 g.addPlayer(O)
 g.addPlayer(R7)
 g.addPlayer(Z)
-cNet = network(lr = .01, inputs = ['HiLo', 'KO', 'HiOpt1', 'HiOpt2', 'Halves', 'Omega2', 'Red7', 'Zen', 'Hand', 'hit', 'stay'],  hidden = [50, 50, 20, 5], outputs = ['output'])
+cNet = network(lr =.08, inputs = ['HiLo', 'KO', 'HiOpt1', 'HiOpt2', 'Halves', 'Omega2', 'Red7', 'Zen', 'Hand', 'hit', 'stay'],  hidden = [50, 50, 20, 5], outputs = ['output'])
 c = catcher(cNet)
 c.addCounter(HL)
 c.addCounter(HO1)
@@ -83,50 +83,3 @@ try:
     c.network.saveToFile('fin.nw')
 except KeyboardInterrupt:
     c.network.saveToFile('fin.nw')
-'''
-from network import network
-from layer import layer
-
-n = network()
-l = layer(size = 10)
-l1 = layer(size = 10)
-l2 = layer(size = 2)
-out = layer(names = ['out'] )
-
-n.addLayer(l)
-n.addLayer(l1)
-n.addLayer(l1)
-n.addLayer(l1)
-n.addLayer(l2)
-n.addOutputLayer(out)
-
-expected0 = {'out':0}
-expected1 = {'out':1}
-
-for i in xrange(0, 5000):
-    n.train( [0,0,0,0,0], expected0 )
-    n.train( [1,1,1,1,1], expected1 )
-    print 'training run', i, 'complete'
-
-o = n.run( [1,1,1,1,1] )
-print o
-o = n.run( [0,0,0,0,0] )
-print o
-
-from network import network
-from layer import layer
-import json
-import random
-
-n = network(lr = .3, inputs = ['top', 'bottom'],  hidden = [5, 5], outputs = ['output'])
-for i in range(10000):
-    o1 = n.train([1, 0], [1])
-    o2 = n.train([0, 1], [1])
-    o3 = n.train([1, 1], [0])
-    o4 = n.train([0, 0], [0])
-    
-print '1, 0', n.run([1, 0])['output']
-print '0, 1', n.run([0, 1])['output']
-print '0, 0', n.run([0, 0])['output']
-print '1, 1', n.run([1, 1])['output']
-'''
