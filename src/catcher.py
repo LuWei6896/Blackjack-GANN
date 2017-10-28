@@ -39,19 +39,13 @@ class catcher(object):
             self.counts[player.strategy] = player.getCount()
 
     def train(self, prevSum, hit, stay, expected, noTrain = None, catcher = None):
-        self.getCounts()
-        c = self.counts
-        values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, hit, stay]
-        self.values = values 
+        self.values = self.getValues(prevSum, hit, stay) 
         out = self.run(prevSum, hit, stay)
         
         self.network.train(values, expected, noTrain = noTrain, catcher = catcher)
 
     def run(self, prevSum, hit, stay):
-        self.getCounts()
-        c = self.counts #just so i don't have to type a million times
-        values = [ c['HiLo'], c['KO'], c['HiOpt1'], c['HiOpt2'], c['Halves'], c['Omega2'], c['Red7'], c['Zen'], prevSum, hit, stay]
-        self.values = values 
+        self.values = self.getValues(prevSum, hit, stay) 
         return self.network.run(values)
 
     def getValues(self, prevSum, hit, stay):
